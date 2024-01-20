@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import GameContent from './GameContent';
 import GameScoreboard from './GameScoreboard';
 import { getChampList } from '../helpers/DataFetcher';
+import Loading from './Loading';
 
 const GameField = ({ gameVersion }) => {
   const [score, setScore] = useState(0);
@@ -27,9 +28,12 @@ const GameField = ({ gameVersion }) => {
     getChamps();
   }, [gameVersion, champions.length]);
 
+  const content =
+    champions.length > 0 ? <GameContent></GameContent> : <Loading forWho="game"></Loading>;
+
   return (
     <section className="play-field">
-      <GameContent></GameContent>
+      {content}
       <GameScoreboard score={score}></GameScoreboard>
     </section>
   );
