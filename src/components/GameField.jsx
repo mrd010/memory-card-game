@@ -15,7 +15,7 @@ const GameField = ({ gameVersion }) => {
           const champs = await getChampList(gameVersion);
           setChamps(
             Object.values(champs.data).map((c) => {
-              return { id: c.id, key: c.key, title: c.title };
+              return { id: c.id, title: c.title, selected: false };
             })
           );
         }
@@ -26,17 +26,6 @@ const GameField = ({ gameVersion }) => {
 
     getChamps();
   }, [gameVersion, champions.length]);
-
-  // const list =
-  //   champions.length > 0 ? (
-  //     <ul>
-  //       {champions.map((champ) => {
-  //         return <li key={champ.key}>{champ.id}</li>;
-  //       })}
-  //     </ul>
-  //   ) : (
-  //     <div>Nothing</div>
-  //   );
 
   return (
     <section className="play-field">

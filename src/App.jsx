@@ -3,6 +3,7 @@ import MainContent from './components/MainContent';
 import Header from './components/header';
 import './css/App.scss';
 import { getCurrentVersion } from './helpers/DataFetcher';
+import Loading from './components/Loading';
 
 function App() {
   const [version, setVersion] = useState('');
@@ -23,10 +24,19 @@ function App() {
     getVersion();
   }, [version]);
 
+  // if is loading display loading
+  // display content after loading
+  const content =
+    version === '' ? (
+      <Loading forWho="main"></Loading>
+    ) : (
+      <MainContent gameVersion={version}></MainContent>
+    );
+
   return (
     <>
       <Header></Header>
-      <MainContent gameVersion={version}></MainContent>
+      {content}
     </>
   );
 }
