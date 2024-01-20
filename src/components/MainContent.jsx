@@ -1,13 +1,11 @@
-import GameContent from './GameContent';
 import GameHeader from './GameHeader';
-import GameScoreboard from './GameScoreboard';
+import GameField from './GameField';
 
 const MainContent = () => {
   return (
     <main className="main">
       <GameHeader></GameHeader>
-      <GameContent></GameContent>
-      <GameScoreboard></GameScoreboard>
+      <GameField></GameField>
     </main>
   );
 };
