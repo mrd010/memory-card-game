@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import GameScoreboard from './GameScoreboard';
 import { shuffle, getRandomItems } from '../helpers/Utilities';
 import GameOverScreen from './GameOverScreen';
@@ -7,7 +7,6 @@ import ChampCard from './ChampCard';
 let randomChamps = [];
 
 const GameField = ({ chosenChamps }) => {
-  const [selectedChamp, setSelectedChamp] = useState('');
   const [selectedBeforeChamps, setSelectedBeforeChamps] = useState([]);
   const [gameStatus, setGameStatus] = useState('not started');
   const [selectedCard, setSelectedCard] = useState('none');
@@ -16,7 +15,6 @@ const GameField = ({ chosenChamps }) => {
     if (randomChampsArray.length > 0) {
       let lastItem = randomChampsArray[randomChampsArray.length - 1];
       if (randomChampsArray.every((champ) => selectedBeforeChamps.includes(champ))) {
-        console.log('changed to');
         // 1. an array of not selected before champs
         const notSelectedBeforeChamps = chosenChamps.filter(
           (champ) => !selectedBeforeChamps.includes(champ)
@@ -29,7 +27,6 @@ const GameField = ({ chosenChamps }) => {
     return randomChampsArray;
   };
 
-  console.log(selectedBeforeChamps);
   const isWin = selectedBeforeChamps.length === chosenChamps.length && gameStatus === 'ended';
 
   if (gameStatus === 'not started') {
@@ -45,7 +42,6 @@ const GameField = ({ chosenChamps }) => {
     if (gameStatus === 'started') {
       setSelectedCard(champId);
       if (selectedBeforeChamps.includes(champId)) {
-        console.log('lose');
         setGameStatus('ended');
       } else {
         setSelectedBeforeChamps([...selectedBeforeChamps, champId]);

@@ -11,8 +11,6 @@ const MainContent = ({ gameVersion }) => {
   const [champions, setChamps] = useState([]);
   const [fetchTries, setFetchTries] = useState(0);
 
-  // console.log(gameVersion);
-
   useEffect(() => {
     const getChamps = async function () {
       try {
