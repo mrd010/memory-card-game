@@ -1,83 +1,87 @@
 import { useEffect, useState } from 'react';
-import GameContent from './GameContent';
 import GameScoreboard from './GameScoreboard';
-import { getChampList } from '../helpers/DataFetcher';
-import Loading from './Loading';
-import { uniqueRandomNumbers } from '../helpers/Utilities';
+import { shuffle, getRandomItems } from '../helpers/Utilities';
+import GameOverScreen from './GameOverScreen';
+import ChampCard from './ChampCard';
 
-const GameField = ({ gameVersion }) => {
-  const [score, setScore] = useState(0);
-  const [champions, setChamps] = useState([]);
+let randomChamps = [];
+
+const GameField = ({ chosenChamps }) => {
+  const [selectedChamp, setSelectedChamp] = useState('');
+  const [selectedBeforeChamps, setSelectedBeforeChamps] = useState([]);
+  const [gameStatus, setGameStatus] = useState('not started');
+  const [selectedCard, setSelectedCard] = useState('none');
+
+  const correctRandomChamps = (randomChampsArray) => {
+    if (randomChampsArray.length > 0) {
+      let lastItem = randomChampsArray[randomChampsArray.length - 1];
+      if (randomChampsArray.every((champ) => selectedBeforeChamps.includes(champ))) {
+        console.log('changed to');
+        // 1. an array of not selected before champs
+        const notSelectedBeforeChamps = chosenChamps.filter(
+          (champ) => !selectedBeforeChamps.includes(champ)
+        );
+        // 2. a random champ for not selected array
+        lastItem = getRandomItems(notSelectedBeforeChamps).at(0);
+      }
+      return [...randomChampsArray.slice(0, -1), lastItem];
+    }
+    return randomChampsArray;
+  };
+
+  console.log(selectedBeforeChamps);
+  const isWin = selectedBeforeChamps.length === chosenChamps.length && gameStatus === 'ended';
+
+  if (gameStatus === 'not started') {
+    randomChamps = ['', '', '', ''];
+    if (chosenChamps.length > 0) {
+      setGameStatus('started');
+    }
+  } else if (gameStatus === 'started') {
+    randomChamps = shuffle(correctRandomChamps(getRandomItems(chosenChamps, 4)));
+  }
 
   const handleCardSelect = (champId) => {
-    if (!champions.find((champ) => champ.id === champId).selectedBefore) {
-      setScore(score + 1);
-      setChamps(
-        champions.map((champ) => {
-          if (champ.id === champId) {
-            return { ...champ, selectedBefore: true };
-          }
-          return champ;
-        })
-      );
+    if (gameStatus === 'started') {
+      setSelectedCard(champId);
+      if (selectedBeforeChamps.includes(champId)) {
+        console.log('lose');
+        setGameStatus('ended');
+      } else {
+        setSelectedBeforeChamps([...selectedBeforeChamps, champId]);
+        if (selectedBeforeChamps.length === chosenChamps.length - 1) {
+          setGameStatus('ended');
+        }
+      }
     }
   };
 
-  // fetch game champs list
-  useEffect(() => {
-    const getChamps = async function () {
-      try {
-        if (gameVersion && gameVersion !== '' && champions.length === 0) {
-          const champs = await getChampList(gameVersion);
-
-          const champsArray = Object.values(champs.data);
-          const randomNumbers = uniqueRandomNumbers(10, champsArray.length);
-          setChamps(
-            randomNumbers.map((index) => {
-              const c = champsArray[index];
-              return { id: c.id, title: c.title, key: c.key, selectedBefore: false };
-            })
-          );
-        }
-      } catch (e) {
-        console.error(e.message);
-      }
-    };
-
-    getChamps();
-  }, [gameVersion, champions.length]);
-
-  // select 4 random unique champions
-  let randomChamps = [];
-  if (champions.length > 0) {
-    const randomIndexes = uniqueRandomNumbers(4, champions.length);
-    randomChamps = randomIndexes.map((index) => champions[index]);
-    // make sure at least one champ is not selected before
-    if (randomChamps.every((champ) => champ.selectedBefore)) {
-      randomChamps.pop();
-      const nonSelectedChamps = champions.filter((champ) => !champ.selectedBefore);
-      const randomChamp = nonSelectedChamps.at(
-        Math.floor(Math.random() * nonSelectedChamps.length)
-      );
-      randomChamps.push(randomChamp);
-    }
-
-    // shuffle random champs
-    randomChamps.sort((a, b) => a.key - b.key);
-  }
-
-  // if champ list not loaded show loading
-  const content =
-    champions.length > 0 ? (
-      <GameContent champions={randomChamps} onChampSelect={handleCardSelect}></GameContent>
-    ) : (
-      <Loading forWho="game"></Loading>
-    );
+  // game over screen
+  const gameOverScreen =
+    gameStatus === 'ended' ? <GameOverScreen isWin={isWin}></GameOverScreen> : null;
 
   return (
     <section className="play-field">
-      {content}
-      <GameScoreboard score={score}></GameScoreboard>
+      {randomChamps.map((champ, index) => {
+        return (
+          <button
+            key={index}
+            className={`card-button ${selectedCard === champ ? 'selected' : ''}}`}
+            onClick={() => {
+              handleCardSelect(champ);
+            }}
+            disabled={gameStatus !== 'started'}
+          >
+            <ChampCard
+              key={champ}
+              champName={champ}
+              isSelected={selectedCard === champ}
+            ></ChampCard>
+          </button>
+        );
+      })}
+      <GameScoreboard score={selectedBeforeChamps.length}></GameScoreboard>
+      {gameOverScreen}
     </section>
   );
 };

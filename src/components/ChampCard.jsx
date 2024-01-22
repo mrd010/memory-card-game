@@ -1,17 +1,13 @@
 import ChampImage from './helpers/ChampImage';
 
-const ChampCard = ({ champId, champTitle, isSelected, onSelect }) => {
+const ChampCard = ({ champName }) => {
   return (
-    <button
-      className={`champ-card ${isSelected ? 'selected' : ''}`}
-      onClick={() => onSelect(champId)}
-    >
-      <ChampImage champName={champId}></ChampImage>
+    <>
+      <ChampImage champName={champName}></ChampImage>
       <div className="champ-title">
-        <span className="name">{champId}</span>
-        <span className="title">{champTitle}</span>
+        <span className="name">{champName}</span>
       </div>
-    </button>
+    </>
   );
 };
 

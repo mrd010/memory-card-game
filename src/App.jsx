@@ -7,22 +7,30 @@ import Loading from './components/Loading';
 
 function App() {
   const [version, setVersion] = useState('');
+  const [fetchTries, setFetchTries] = useState(0);
 
   // fetch game version first
   useEffect(() => {
+    let ignore = false;
     const getVersion = async function () {
       try {
-        if (version == '') {
-          const curVer = await getCurrentVersion();
+        const curVer = await getCurrentVersion();
+        if (!ignore) {
           setVersion(curVer);
         }
       } catch (e) {
         console.error(e.message);
+        setFetchTries(fetchTries + 1);
       }
     };
 
-    getVersion();
-  }, [version]);
+    if (fetchTries < 10) {
+      getVersion();
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [fetchTries]);
 
   // if is loading display loading
   // display content after loading
