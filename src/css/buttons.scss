@@ -1,0 +1,25 @@
+@mixin glowingButton($tTime, $bgColor, $shadowSizeScale) {
+  .icon,
+  .button-text {
+    transition: all $tTime * 0.5 ease;
+  }
+  transition: all $tTime ease;
+  &:hover,
+  &:focus {
+    text-shadow: 0 0 3px * $shadowSizeScale rgba(0, 0, 0, 0.3);
+    background-color: $bgColor;
+    color: $bgColor;
+    box-shadow:
+      0 0 10px * $shadowSizeScale 0 rgba(0, 0, 0, 0.3),
+      0 0 40px * $shadowSizeScale 0 rgba($color: $bgColor, $alpha: 0.9),
+      0 0 60px * $shadowSizeScale 10px * $shadowSizeScale rgba($color: $bgColor, $alpha: 0.3);
+    border-color: transparent;
+    .icon {
+      filter: brightness(0) saturate(100%) invert(8%) sepia(20%) saturate(1984%) hue-rotate(184deg)
+        brightness(90%) contrast(96%);
+    }
+    .button-text {
+      color: #0f172a;
+    }
+  }
+}

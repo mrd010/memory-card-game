@@ -41,8 +41,8 @@ const MainContent = ({ gameVersion }) => {
       <GameHeader></GameHeader>
       <GameField key={gameSessionCount} chosenChamps={randomChamps}></GameField>
       <div className="game-version">
-        <span className="desc">Synced with League of Legends v.</span>
-        <span className="version">{gameVersion}</span>
+        <span className="desc">Synced with League of Legends </span>
+        <span className="version">{`v.${gameVersion}`}</span>
       </div>
     </main>
   );

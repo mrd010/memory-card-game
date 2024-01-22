@@ -58,24 +58,26 @@ const GameField = ({ chosenChamps }) => {
 
   return (
     <section className="play-field">
-      {randomChamps.map((champ, index) => {
-        return (
-          <button
-            key={index}
-            className={`card-button ${selectedCard === champ ? 'selected' : ''}}`}
-            onClick={() => {
-              handleCardSelect(champ);
-            }}
-            disabled={gameStatus !== 'started'}
-          >
-            <ChampCard
-              key={champ}
-              champName={champ}
-              isSelected={selectedCard === champ}
-            ></ChampCard>
-          </button>
-        );
-      })}
+      <div className="cards-container">
+        {randomChamps.map((champ, index) => {
+          return (
+            <button
+              key={index}
+              className={`card-button ${selectedCard === champ ? 'selected' : ''}`}
+              onClick={() => {
+                handleCardSelect(champ);
+              }}
+              disabled={gameStatus !== 'started'}
+            >
+              <ChampCard
+                key={champ}
+                champName={champ}
+                isSelected={selectedCard === champ}
+              ></ChampCard>
+            </button>
+          );
+        })}
+      </div>
       <GameScoreboard score={selectedBeforeChamps.length}></GameScoreboard>
       {gameOverScreen}
     </section>

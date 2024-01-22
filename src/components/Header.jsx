@@ -3,7 +3,7 @@ import RestartBtn from './RestartBtn';
 
 const Header = () => {
   return (
-    <header>
+    <header className="app-header">
       <img src={logo} alt="App Logo" className="header-logo" />
       <h1 className="header-title">CHARACTER MEMORY GAME</h1>
       <RestartBtn></RestartBtn>
