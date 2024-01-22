@@ -27,8 +27,6 @@ const GameField = ({ chosenChamps }) => {
     return randomChampsArray;
   };
 
-  const isWin = selectedBeforeChamps.length === chosenChamps.length && gameStatus === 'ended';
-
   if (gameStatus === 'not started') {
     randomChamps = ['', '', '', ''];
     if (chosenChamps.length > 0) {
@@ -54,7 +52,12 @@ const GameField = ({ chosenChamps }) => {
 
   // game over screen
   const gameOverScreen =
-    gameStatus === 'ended' ? <GameOverScreen isWin={isWin}></GameOverScreen> : null;
+    gameStatus === 'ended' ? (
+      <GameOverScreen
+        score={selectedBeforeChamps.length}
+        maxScore={chosenChamps.length}
+      ></GameOverScreen>
+    ) : null;
 
   return (
     <section className="play-field">
@@ -72,14 +75,17 @@ const GameField = ({ chosenChamps }) => {
               <ChampCard
                 key={champ}
                 champName={champ}
-                isSelected={selectedCard === champ}
+                gameIsEnded={gameStatus === 'ended'}
               ></ChampCard>
             </button>
           );
         })}
+        {gameOverScreen}
       </div>
-      <GameScoreboard score={selectedBeforeChamps.length}></GameScoreboard>
-      {gameOverScreen}
+      <GameScoreboard
+        score={selectedBeforeChamps.length}
+        gameIsEnded={gameStatus === 'ended'}
+      ></GameScoreboard>
     </section>
   );
 };
