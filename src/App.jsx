@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
 import MainContent from './components/MainContent';
-import Header from './components/header';
+import Header from './components/Header';
 import './css/App.scss';
 import { getCurrentVersion } from './helpers/DataFetcher';
 import Loading from './components/Loading';
 
 function App() {
   const [version, setVersion] = useState('');
+  const [currentGameSession, setGameSession] = useState(0);
   const [fetchTries, setFetchTries] = useState(0);
+
+  console.log('render');
+  const handleNewGameSession = () => {
+    setGameSession(currentGameSession + 1);
+  };
 
   // fetch game version first
   useEffect(() => {
@@ -38,12 +44,12 @@ function App() {
     version === '' ? (
       <Loading forWho="main"></Loading>
     ) : (
-      <MainContent gameVersion={version}></MainContent>
+      <MainContent gameVersion={version} gameSession={currentGameSession}></MainContent>
     );
 
   return (
     <>
-      <Header></Header>
+      <Header onRestart={handleNewGameSession}></Header>
       {content}
     </>
   );

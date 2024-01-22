@@ -6,8 +6,7 @@ import { getRandomItems } from '../helpers/Utilities';
 
 const n = 10;
 
-const MainContent = ({ gameVersion }) => {
-  const [gameSessionCount, setGameSessionCount] = useState(0);
+const MainContent = ({ gameVersion, gameSession }) => {
   const [champions, setChamps] = useState([]);
   const [fetchTries, setFetchTries] = useState(0);
 
@@ -39,7 +38,7 @@ const MainContent = ({ gameVersion }) => {
   return (
     <main className="main">
       <GameHeader></GameHeader>
-      <GameField key={gameSessionCount} chosenChamps={randomChamps}></GameField>
+      <GameField key={gameSession} chosenChamps={randomChamps}></GameField>
       <div className="game-version">
         <span className="desc">Synced with League of Legends </span>
         <span className="version">{`v.${gameVersion}`}</span>

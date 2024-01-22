@@ -5,7 +5,7 @@
   }
   transition: all $tTime ease;
   &:hover,
-  &:focus {
+  &.active {
     text-shadow: 0 0 3px * $shadowSizeScale rgba(0, 0, 0, 0.3);
     background-color: $bgColor;
     color: $bgColor;
