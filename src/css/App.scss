@@ -89,6 +89,7 @@ body {
     user-select: none;
   }
   .restart-button {
+    z-index: 100;
     display: grid;
     grid-template-columns: auto auto;
     align-items: center;
@@ -244,7 +245,8 @@ $rotateBaseDeg: 5deg;
       }
       .game-over-message {
         font-size: 1.2rem;
-        padding: 0.25rem;
+        padding: 0.5rem;
+        text-align: center;
       }
       .game-over-score {
         font-weight: 900;
