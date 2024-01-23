@@ -81,8 +81,17 @@
     background-size: 200% 100%;
     animation: 1s shine linear infinite;
     width: 308px;
-    height: 560px;
+    height: 100%;
     z-index: 100;
+    @media only screen and (max-width: 1024px) {
+      width: 152.63px;
+    }
+    @media only screen and (max-width: 768px) {
+      width: 174.52px;
+    }
+    @media only screen and (max-width: 480px) {
+      width: 164.34px;
+    }
   }
   @keyframes shine {
     to {

@@ -84,6 +84,7 @@ const GameField = ({ chosenChamps }) => {
         })}
         {gameOverScreen}
       </div>
+
       <GameScoreboard
         score={selectedBeforeChamps.length}
         gameIsEnded={gameStatus === 'ended'}
