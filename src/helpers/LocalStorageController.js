@@ -11,6 +11,7 @@ export const getVersionCached = function getVersionCached() {
   const version = JSON.parse(localStorage.getItem('version'));
   return version;
 };
+//############################################################################################################################################################
 export const getChampListCached = function getChampListCached() {
   const champions = JSON.parse(localStorage.getItem('champions'));
   return champions;

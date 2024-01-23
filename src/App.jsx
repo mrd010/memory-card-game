@@ -3,7 +3,7 @@ import MainContent from './components/MainContent';
 import Header from './components/Header';
 import './css/App.scss';
 import { getCurrentVersion } from './helpers/DataFetcher';
-import Loading from './components/Loading';
+import MainLoading from './components/MainLoading';
 import { getVersionCached, storageIsEmpty } from './helpers/LocalStorageController';
 import DataError from './components/DataError';
 
@@ -17,6 +17,10 @@ function App() {
 
   const handleNewGameSession = () => {
     setGameSession(currentGameSession + 1);
+  };
+  const retryConnect = () => {
+    setIsFailed(false);
+    setOfflineMode(false);
   };
 
   // fetch game version first
@@ -60,9 +64,9 @@ function App() {
   // display content after loading
   let content = null;
   if (isFailed) {
-    content = <DataError></DataError>;
+    content = <DataError onRetry={retryConnect}></DataError>;
   } else if (version === '') {
-    content = <Loading forWho="main"></Loading>;
+    content = <MainLoading></MainLoading>;
   } else {
     content = (
       <MainContent

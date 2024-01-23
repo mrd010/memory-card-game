@@ -1,5 +1,5 @@
 import { capitalize } from '../../helpers/Utilities';
-import Loading from '../Loading';
+import Loading from '../MainLoading';
 
 const ChampImage = ({ champName }) => {
   if (champName === '') {
