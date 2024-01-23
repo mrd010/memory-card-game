@@ -67,8 +67,10 @@ const GameField = ({ chosenChamps }) => {
             <button
               key={index}
               className={`card-button ${selectedCard === champ ? 'selected' : ''}`}
-              onClick={() => {
-                handleCardSelect(champ);
+              onClick={(e) => {
+                if (!e.target.querySelector('.image-loader')) {
+                  handleCardSelect(champ);
+                }
               }}
               disabled={gameStatus !== 'started'}
             >
