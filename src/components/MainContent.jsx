@@ -3,12 +3,12 @@ import GameField from './GameField';
 import { useEffect, useState } from 'react';
 import { getChampList } from '../helpers/DataFetcher';
 import { getRandomItems } from '../helpers/Utilities';
+import { getChampListCached, saveChampList, saveVersion } from '../helpers/LocalStorageController';
 
 const n = 10;
 
-const MainContent = ({ gameVersion, gameSession }) => {
+const MainContent = ({ gameVersion, gameSession, isOffline }) => {
   const [champions, setChamps] = useState([]);
-  const [fetchTries, setFetchTries] = useState(0);
 
   useEffect(() => {
     const getChamps = async function () {
@@ -17,20 +17,24 @@ const MainContent = ({ gameVersion, gameSession }) => {
         if (gameVersion !== undefined && gameVersion !== '') {
           const champs = await getChampList(gameVersion);
           // convert champs data object to array of champs
-          const champsArray = Object.values(champs.data);
+          const champsArray = Object.values(champs.data).map((champ) => champ.id);
           // choose n random champs for using in game session
-          setChamps(champsArray.map((champ) => champ.id));
+          saveVersion(gameVersion);
+          saveChampList(champsArray);
+          setChamps(champsArray);
         }
       } catch (e) {
         console.error(e.message);
-        setFetchTries(fetchTries + 1);
       }
     };
 
-    if (fetchTries < 10) {
+    if (!isOffline) {
       getChamps();
+    } else {
+      const champList = getChampListCached();
+      setChamps(champList);
     }
-  }, [gameVersion, fetchTries]);
+  }, [gameVersion, isOffline]);
 
   // select n random champions for using in game session
   const randomChamps = getRandomItems(champions, n);

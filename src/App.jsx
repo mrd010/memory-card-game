@@ -1,16 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MainContent from './components/MainContent';
 import Header from './components/Header';
 import './css/App.scss';
 import { getCurrentVersion } from './helpers/DataFetcher';
 import Loading from './components/Loading';
+import { getVersionCached, storageIsEmpty } from './helpers/LocalStorageController';
+import DataError from './components/DataError';
 
 function App() {
   const [version, setVersion] = useState('');
   const [currentGameSession, setGameSession] = useState(0);
-  const [fetchTries, setFetchTries] = useState(0);
+  const [isOffline, setOfflineMode] = useState(false);
+  const [isFailed, setIsFailed] = useState(false);
 
-  console.log('render');
+  const cachedVersion = useRef(null);
+
   const handleNewGameSession = () => {
     setGameSession(currentGameSession + 1);
   };
@@ -18,34 +22,56 @@ function App() {
   // fetch game version first
   useEffect(() => {
     let ignore = false;
+    if (cachedVersion.current === null && !storageIsEmpty()) {
+      cachedVersion.current = getVersionCached();
+    }
     const getVersion = async function () {
       try {
-        const curVer = await getCurrentVersion();
+        const lastVersion = await getCurrentVersion();
         if (!ignore) {
-          setVersion(curVer);
+          if (cachedVersion.current === lastVersion) {
+            setOfflineMode(true);
+          } else {
+            setVersion(lastVersion);
+          }
         }
       } catch (e) {
         console.error(e.message);
-        setFetchTries(fetchTries + 1);
+        setOfflineMode(true);
       }
     };
 
-    if (fetchTries < 10) {
+    if (!isOffline) {
       getVersion();
+    } else {
+      if (cachedVersion.current !== null) {
+        setVersion(cachedVersion.current);
+      } else {
+        setIsFailed(true);
+      }
     }
+
     return () => {
       ignore = true;
     };
-  }, [fetchTries]);
+  }, [isOffline]);
 
   // if is loading display loading
   // display content after loading
-  const content =
-    version === '' ? (
-      <Loading forWho="main"></Loading>
-    ) : (
-      <MainContent gameVersion={version} gameSession={currentGameSession}></MainContent>
+  let content = null;
+  if (isFailed) {
+    content = <DataError></DataError>;
+  } else if (version === '') {
+    content = <Loading forWho="main"></Loading>;
+  } else {
+    content = (
+      <MainContent
+        gameVersion={version}
+        gameSession={currentGameSession}
+        isOffline={isOffline}
+      ></MainContent>
     );
+  }
 
   return (
     <>

@@ -9,6 +9,13 @@
 }
 
 @font-face {
+  font-family: 'bitstream';
+  src: url('../assets/fonts/VeraMono-Bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'spiegel';
   src: url('../assets/fonts/spiegel_tt_bold-webfont.woff') format('woff');
   font-weight: bold;
@@ -313,6 +320,9 @@ $rotateBaseDeg: 5deg;
     text-align: center;
     font-size: 2rem;
     padding: 2rem 1rem;
+    .score {
+      font-family: 'bitstream', 'Courier New', Courier, monospace;
+    }
   }
 }
 
