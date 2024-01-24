@@ -1,16 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { capitalize } from '../helpers/Utilities';
+import ImageLoadContext from './helpers/ImageLoadContext';
 
 const ChampImage = ({ champName }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const imagesLoaded = useContext(ImageLoadContext);
+
   const r = useRef(null);
   useEffect(() => {
-    if (isLoaded) {
+    if (imagesLoaded) {
       r.current.style.opacity = '1';
     }
-  }, [isLoaded]);
+  }, [imagesLoaded]);
 
-  const imageLoader = !isLoaded ? <div className="image-loader"></div> : null;
+  const imageLoader = !imagesLoaded ? <div className="image-loader"></div> : null;
 
   return (
     <>
@@ -20,9 +22,6 @@ const ChampImage = ({ champName }) => {
         src={`https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${capitalize(champName)}_0.jpg`}
         alt={champName}
         style={{ opacity: '0' }}
-        onLoad={() => {
-          setIsLoaded(true);
-        }}
       />
       {imageLoader}
     </>
