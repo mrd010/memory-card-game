@@ -18,6 +18,7 @@ function App() {
   const handleNewGameSession = () => {
     setGameSession(currentGameSession + 1);
   };
+
   const retryConnect = () => {
     setIsFailed(false);
     setOfflineMode(false);

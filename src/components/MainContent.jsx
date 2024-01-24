@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { getChampList } from '../helpers/DataFetcher';
 import { capitalize, getRandomItems } from '../helpers/Utilities';
 import { getChampListCached, saveChampList, saveVersion } from '../helpers/LocalStorageController';
-import ImageLoadContext from './helpers/ImageLoadContext';
+import MainLoading from './MainLoading';
 
-const n = 10;
+const n = 25;
 let randomChamps = [];
 
 const MainContent = ({ gameVersion, gameSession, isOffline }) => {
@@ -39,12 +39,12 @@ const MainContent = ({ gameVersion, gameSession, isOffline }) => {
     }
   }, [gameVersion, isOffline]);
 
+  // select n random champions for using in game session
+  randomChamps = getRandomItems(champions, n);
   useEffect(() => {
     setImagesLoaded(false);
   }, [gameSession]);
 
-  // select n random champions for using in game session
-  randomChamps = getRandomItems(champions, n);
   useEffect(() => {
     if (!imagesLoaded) {
       const getImgSrc = (champName) =>
@@ -56,6 +56,7 @@ const MainContent = ({ gameVersion, gameSession, isOffline }) => {
           img.src = imageSrc;
           img.onload = () => {
             setTimeout(() => {
+              console.log(img);
               resolve(imageSrc);
             }, 2000);
           };
@@ -64,7 +65,7 @@ const MainContent = ({ gameVersion, gameSession, isOffline }) => {
       };
 
       if (champions.length > 0) {
-        Promise.all([imageSrcList.map((imageSrc) => loadImage(imageSrc))])
+        Promise.all(imageSrcList.map((imageSrc) => loadImage(imageSrc)))
           .then(() => {
             console.log('loaded');
             setImagesLoaded(true);
@@ -77,9 +78,15 @@ const MainContent = ({ gameVersion, gameSession, isOffline }) => {
   return (
     <main className="main">
       <GameHeader></GameHeader>
-      <ImageLoadContext.Provider value={imagesLoaded}>
-        <GameField key={gameSession} chosenChamps={randomChamps}></GameField>
-      </ImageLoadContext.Provider>
+      {!imagesLoaded ? (
+        <MainLoading></MainLoading>
+      ) : (
+        <GameField
+          key={gameSession}
+          chosenChamps={randomChamps}
+          imagesLoaded={imagesLoaded}
+        ></GameField>
+      )}
       <div className="game-version">
         <span className="desc">Synced with League of Legends </span>
         <span className="version">{`v.${gameVersion}`}</span>

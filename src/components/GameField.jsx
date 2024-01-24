@@ -1,17 +1,14 @@
-import { useContext, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import GameScoreboard from './GameScoreboard';
 import { shuffle, getRandomItems } from '../helpers/Utilities';
 import GameOverScreen from './GameOverScreen';
 import ChampCard from './ChampCard';
-import ImageLoadContext from './helpers/ImageLoadContext';
 
 let randomChamps = [];
 
-const GameField = ({ chosenChamps }) => {
+const GameField = ({ chosenChamps, imagesLoaded }) => {
   const [selectedBeforeChamps, setSelectedBeforeChamps] = useState([]);
   const [gameStatus, setGameStatus] = useState('not started');
-
-  const imagesLoaded = useContext(ImageLoadContext);
 
   const btnContainer = useRef(null);
 
@@ -53,6 +50,12 @@ const GameField = ({ chosenChamps }) => {
     }
   };
 
+  useEffect(() => {
+    if (gameStatus === 'ended' || selectedBeforeChamps.length > 0) {
+      btnContainer.current.style.opacity = '1';
+    }
+  }, [selectedBeforeChamps.length, gameStatus]);
+
   // game over screen
   const gameOverScreen =
     gameStatus === 'ended' ? (
@@ -67,7 +70,7 @@ const GameField = ({ chosenChamps }) => {
       <div
         className="cards-container"
         ref={btnContainer}
-        style={{ opacity: `${imagesLoaded ? '1' : '0'}` }}
+        style={{ opacity: `${imagesLoaded ? '1' : '0'}`, transitionDuration: '0.2s' }}
       >
         {randomChamps.map((champ, index) => {
           return (
@@ -75,7 +78,10 @@ const GameField = ({ chosenChamps }) => {
               key={index}
               className={`card-button`}
               onClick={() => {
-                handleCardSelect(champ);
+                btnContainer.current.style.opacity = '0';
+                setTimeout(() => {
+                  handleCardSelect(champ);
+                }, 200);
               }}
               disabled={gameStatus !== 'started'}
             >
