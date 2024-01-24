@@ -1,15 +1,17 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import GameScoreboard from './GameScoreboard';
 import { shuffle, getRandomItems } from '../helpers/Utilities';
 import GameOverScreen from './GameOverScreen';
 import ChampCard from './ChampCard';
+import ImageLoadContext from './helpers/ImageLoadContext';
 
 let randomChamps = [];
-const trTime = 100;
 
 const GameField = ({ chosenChamps }) => {
   const [selectedBeforeChamps, setSelectedBeforeChamps] = useState([]);
   const [gameStatus, setGameStatus] = useState('not started');
+
+  const imagesLoaded = useContext(ImageLoadContext);
 
   const btnContainer = useRef(null);
 
@@ -65,7 +67,7 @@ const GameField = ({ chosenChamps }) => {
       <div
         className="cards-container"
         ref={btnContainer}
-        style={{ transitionDuration: `${trTime / 1000}s` }}
+        style={{ opacity: `${imagesLoaded ? '1' : '0'}` }}
       >
         {randomChamps.map((champ, index) => {
           return (
@@ -73,9 +75,7 @@ const GameField = ({ chosenChamps }) => {
               key={index}
               className={`card-button`}
               onClick={() => {
-                setTimeout(() => {
-                  handleCardSelect(champ);
-                }, trTime);
+                handleCardSelect(champ);
               }}
               disabled={gameStatus !== 'started'}
             >
