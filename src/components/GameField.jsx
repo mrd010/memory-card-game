@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import GameScoreboard from './GameScoreboard';
 import { shuffle, getRandomItems } from '../helpers/Utilities';
 import GameOverScreen from './GameOverScreen';
 import ChampCard from './ChampCard';
 
 let randomChamps = [];
+const trTime = 100;
 
 const GameField = ({ chosenChamps }) => {
   const [selectedBeforeChamps, setSelectedBeforeChamps] = useState([]);
   const [gameStatus, setGameStatus] = useState('not started');
-  const [selectedCard, setSelectedCard] = useState('none');
+
+  const btnContainer = useRef(null);
 
   const correctRandomChamps = (randomChampsArray) => {
     if (randomChampsArray.length > 0) {
@@ -38,7 +40,6 @@ const GameField = ({ chosenChamps }) => {
 
   const handleCardSelect = (champId) => {
     if (gameStatus === 'started') {
-      setSelectedCard(champId);
       if (selectedBeforeChamps.includes(champId)) {
         setGameStatus('ended');
       } else {
@@ -61,16 +62,20 @@ const GameField = ({ chosenChamps }) => {
 
   return (
     <section className="play-field">
-      <div className="cards-container">
+      <div
+        className="cards-container"
+        ref={btnContainer}
+        style={{ transitionDuration: `${trTime / 1000}s` }}
+      >
         {randomChamps.map((champ, index) => {
           return (
             <button
               key={index}
-              className={`card-button ${selectedCard === champ ? 'selected' : ''}`}
-              onClick={(e) => {
-                if (!e.target.querySelector('.image-loader')) {
+              className={`card-button`}
+              onClick={() => {
+                setTimeout(() => {
                   handleCardSelect(champ);
-                }
+                }, trTime);
               }}
               disabled={gameStatus !== 'started'}
             >

@@ -5,7 +5,7 @@ import { getChampList } from '../helpers/DataFetcher';
 import { getRandomItems } from '../helpers/Utilities';
 import { getChampListCached, saveChampList, saveVersion } from '../helpers/LocalStorageController';
 
-const n = 10;
+const n = 50;
 
 const MainContent = ({ gameVersion, gameSession, isOffline }) => {
   const [champions, setChamps] = useState([]);
