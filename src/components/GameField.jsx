@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import GameScoreboard from './GameScoreboard';
 import { shuffle, getRandomItems } from '../helpers/Utilities';
 import GameOverScreen from './GameOverScreen';
@@ -60,12 +60,26 @@ const GameField = ({ chosenChamps }) => {
       ></GameOverScreen>
     ) : null;
 
+  useEffect(() => {
+    const loaders = [];
+    btnContainer.current.querySelectorAll('.champ-picture').forEach((image) => {
+      const p = new Promise((resolve) => {
+        image.addEventListener('load', () => {
+          resolve();
+        });
+      });
+      loaders.push(p);
+    });
+
+    Promise.all(loaders).then(() => (btnContainer.current.style.opacity = '1'));
+  });
+
   return (
     <section className="play-field">
       <div
         className="cards-container"
         ref={btnContainer}
-        style={{ transitionDuration: `${trTime / 1000}s` }}
+        style={{ transitionDuration: `${trTime / 1000}s`, opacity: '0' }}
       >
         {randomChamps.map((champ, index) => {
           return (
